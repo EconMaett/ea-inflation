@@ -5,6 +5,8 @@
 
 Quarto dashboard using the `{eurostat}` R package to access inflation measures from EUROSTAT and the `{gt}` package to create a nice table.
 
+You can see the dashboard [here](https://econmaett.github.io/ea-inflation/inflation-table.html).
+
 Find out more about the `{eurostat}` package on the [rOpenGov](https://ropengov.github.io/eurostat/) website.
 
 The book "Using Eurostat with R" by Athanassios Stavrakoudis has a nice [Chapter on Time Series Data](https://stavrakoudis.econ.uoi.gr/r-eurostat/time-series-data.html).
