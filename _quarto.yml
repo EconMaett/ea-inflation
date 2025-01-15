@@ -1,0 +1,23 @@
+project:
+  type: website
+
+execute: 
+  freeze: auto
+
+website:
+  title: "Euro Area Inflation"
+  navbar:
+    left:
+      - text: "About"
+        href: index.qmd
+      - text: "Table"
+        href: inflation-table.qmd
+
+format:
+  html:
+    theme: cosmo
+    css: styles.css
+    toc: true
+
+
+

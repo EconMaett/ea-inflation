@@ -1,0 +1,5 @@
+---
+title: "Euro Area Inflation"
+---
+
+Using `{eurostat}` and `{gt}` to create an automatically updated table of inflation in the Euro Area.

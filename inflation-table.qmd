@@ -1,0 +1,80 @@
+---
+format: dashboard
+editor: source
+---
+
+```{r, loadpackages}
+#| echo: false
+#| include: false
+
+library(tidyverse)
+library(eurostat)
+library(countrycode)
+library(gt)
+library(gtExtras)
+library(svglite) # For sparklines
+```
+
+
+```{r, loadeurostatdata}
+#| echo: false
+#| include: false
+
+hicp <- get_eurostat(
+  id = "prc_hicp_manr", 
+  filters = list(coicop = "CP00")
+)
+
+ea_avg <- hicp |> 
+  filter(geo == "EA") |> 
+  slice_max(order_by = time, n = 1) |> 
+  pull(values)
+
+hicp <- hicp |> 
+  left_join(
+    y = codelist |> 
+      select(eurostat, country.name.en),
+    by = c("geo" = "eurostat")
+  ) |> 
+  filter(time >= "2019-01-01", geo %in% c(eurostat::ea_countries$code, "HR")) |> 
+  select(geo, country.name.en, time, values) |> 
+  drop_na()
+
+trend <- hicp |> 
+  summarise(trend = list(values), .by = geo)
+
+plot_data <- hicp |> 
+  slice_max(order_by = time, n = 1, by = geo) |> 
+  mutate(dev = values - ea_avg) |> 
+  left_join(y = trend, by = join_by(geo))
+```
+
+
+```{r, createtable}
+plot_data |> 
+  arrange(desc(values)) |> 
+  mutate(geo = if_else(geo == "EL", "GR", geo)) |> 
+  gt() |> 
+  fmt_number(columns = values, locale = "en", decimals = 1, pattern = "{x}%") |> 
+  fmt_number(columns = dev, locale = "en", decimals = 1, force_sign = TRUE) |> 
+  fmt_date(columns = time, rows = everything(), date_style = "yM", locale = "en") |> 
+  fmt_flag(columns = geo, height = "1.5em") |> 
+  gt_plt_sparkline(column = trend, same_limit = FALSE, palette = c(rep("black", 2), rep("transparent", 3))) |> 
+  cols_label(geo = "", country.name.en = "", time = "Month", values = "Inflation", dev = "Dev. Ø") |> 
+  cols_width(country.name.en ~ px(150), values ~ px(100), dev ~ px(80)) |> 
+  cols_align(align = "center", columns = c(time, values, dev)) |> 
+  data_color(columns = values, method = "numeric", palette = "Reds", alpha = 0.9) |> 
+  gt_highlight_rows(rows = geo == "LU", columns = c(geo, country.name.en, time), target_col = country.name.en, bold_target_only = TRUE, fill = "transparent") |> 
+  tab_header(title = html("Euro Area Inflation")) |> 
+  tab_footnote(footnote = "Harmonised Indices of Consumer Prices (HICP)", locations = cells_column_labels(values)) |> 
+  tab_footnote(footnote = "Deviation from Euro Area Average", locations = cells_column_labels(dev)) |> 
+  tab_source_note(source_note = html("<p style='text-aligh:right;'>Data: Eurostat. Table: @econmaett</p>")) |> 
+  gt_theme_538() |> 
+  tab_options(
+    heading.title.font.size = 24,
+    footnotes.padding = 0,
+    footnotes.font.size = 10,
+    source_notes.font.size = 10
+  )
+```
+
