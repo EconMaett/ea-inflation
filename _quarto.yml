@@ -12,6 +12,11 @@ website:
         href: index.qmd
       - text: "Table"
         href: inflation-table.qmd
+    tools:
+      - icon: github
+        href: https://github.com/econMaett/ea-inflation
+  
+  
 
 format:
   html:
