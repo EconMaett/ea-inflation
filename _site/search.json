@@ -4,6 +4,6 @@
     "href": "index.html",
     "title": "Euro Area Inflation",
     "section": "",
-    "text": "Using {eurostat} and {gt} to create an automatically updated table of inflation in the Euro Area."
+    "text": "Using {eurostat} and {gt} and {gtExtras} to create an automatically updated table of inflation in the Euro Area."
   }
 ]
