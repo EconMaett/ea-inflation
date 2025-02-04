@@ -2,6 +2,9 @@
 .Rhistory
 .RData
 .Ruserdata
-inflation-table.R
+
 /.quarto/
 /_site
+
+inflation-table.R
+infl-decomp.R
